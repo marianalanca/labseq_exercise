@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Exercise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css"/>
+    <!-- Load AngularJS -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("ValueManagement", []);
+
+        //Controller Part
+        app.controller("ValueController", function ($scope, $http) {
+
+            //Initialize page with default data which is blank in this example
+            $scope.value = 0;
+
+            $scope.form = {
+                n: 0
+            };
+
+            /* Private Methods */
+            //HTTP GET
+            $scope._refreshPageData = function () {
+                $http({
+                    method: 'GET',
+                    url: '/labseq/' + $scope.form.n
+                }).then(function successCallback(response) {
+                    $scope.value = response.data;
+                    _clearForm();
+                }, function errorCallback(response) {
+                    console.log(response);
+                });
+            }
+        });
+    </script>
+</head>
+<body ng-app="ValueManagement" ng-controller="ValueController">
+
+<div class="container">
+    <h1>Labseq calculator</h1>
+
+    <h3>Insert value</h3>
+    <form ng-submit="_refreshPageData()">
+        <div class="row">
+            <div class="col-6"><input type="number" min="0" placeholder="0" ng-model="form.n" size="60"/></div>
+        </div>
+        <input type="submit" value="Calculate"/>
+    </form>
+
+    <h3>Result</h3>
+    <div class="row">
+        <div class="col-4">{{ value }}</div>
+    </div>
+</div>
+
+</body>
+</html>
